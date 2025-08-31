@@ -6,11 +6,17 @@ This project automates the installation and configuration of a Wordpress website
 
 .
 ├── hosts                     # Inventory file for Ansible
+
 ├── httpd.conf.tmpl           # Apache HTTPD configuration template
+
 ├── playbook.yaml             # Main Ansible playbook for setup
+
 ├── remove.yaml               # Ansible playbook for cleanup
+
 ├── variables.yaml            # Variables file including AWS SecretsManager lookups
+
 ├── virtualhost.conf.tmpl     # VirtualHost configuration template
+
 └── wp-config.php.tmpl        # Wordpress wp-config.php template
 
 ## Prerequisites

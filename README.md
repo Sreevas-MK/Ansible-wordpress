@@ -4,7 +4,6 @@ This project automates the installation and configuration of a Wordpress website
 
 ## Project Structure
 
-.
 ├── hosts                     # Inventory file for Ansible
 
 ├── httpd.conf.tmpl           # Apache HTTPD configuration template

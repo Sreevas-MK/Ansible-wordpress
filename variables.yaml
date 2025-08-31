@@ -1,0 +1,23 @@
+---
+webserver_packages:
+  - httpd
+  - php
+  - php-fpm
+  - php-mysqlnd
+
+db_packages:
+  - mariadb105-server
+  - python3-pip
+
+httpd_port: 80
+httpd_owner: "apache"
+httpd_group: "apache"
+website_hostname: "yourdomain.com"
+website_documentroot: "yourdomain.com" # Enter your domain 
+
+# Fetch all DB secrets from AWS secrets manager
+
+db_root_password: "{{ lookup('amazon.aws.aws_secret', 'ansible/wordpress/db.db_root_password', region='ap-south-1', nested=true) }}"
+db_user_name: "{{ lookup('amazon.aws.aws_secret', 'ansible/wordpress/db.db_user_name', region='ap-south-1', nested=true) }}"
+db_user_password: "{{ lookup('amazon.aws.aws_secret', 'ansible/wordpress/db.db_user_password', region='ap-south-1', nested=true) }}"
+db_name: "{{ lookup('amazon.aws.aws_secret', 'ansible/wordpress/db.db_name', region='ap-south-1', nested=true) }}"

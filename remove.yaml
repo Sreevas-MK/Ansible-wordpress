@@ -1,0 +1,78 @@
+---
+- name: "Wordpress & Mariadb Cleanup"
+  become: true
+  hosts: amazon
+  vars_files:
+    - variables.yaml
+
+  tasks:
+
+    - name: "Stop Webserver Services"
+      service:
+        name: "{{ item }}"
+        state: stopped
+      loop:
+        - httpd
+        - php-fpm
+
+    - name: "Remove Wordpress Document Root"
+      file:
+        path: "/var/www/html/{{ website_documentroot }}"
+        state: absent
+
+    - name: "Remove Wordpress Archive"
+      file:
+        path: "/tmp/wordpress.tar.gz"
+        state: absent
+
+    - name: "Remove Wordpress Extracted Files"
+      file:
+        path: "/tmp/wordpress"
+        state: absent
+
+    - name: "Drop Wordpress Database User"
+      mysql_user:
+        login_user: root
+        login_password: "{{ db_root_password }}"
+        user: "{{ db_user_name }}"
+        host: "localhost"
+        state: absent
+        login_unix_socket: /var/lib/mysql/mysql.sock
+
+    - name: "Drop Wordpress Database"
+      mysql_db:
+        login_user: root
+        login_password: "{{ db_root_password }}"
+        name: "{{ db_name }}"
+        state: absent
+        login_unix_socket: /var/lib/mysql/mysql.sock
+
+    - name: "Stop Mariadb Service"
+      service:
+        name: mariadb
+        state: stopped
+
+    - name: "Uninstall Webserver Packages"
+      yum:
+        name: "{{ webserver_packages }}"
+        state: absent
+
+    - name: "Remove Python Mysql Module"
+      pip:
+        name: PyMySQL
+        state: absent
+
+    - name: "Uninstall Mariadb Packages"
+      yum:
+        name: "{{ db_packages }}"
+        state: absent
+
+    - name: "Remove httpd.conf"
+      file:
+        path: /etc/httpd/conf/httpd.conf
+        state: absent
+
+    - name: "Remove VirtualHost configuration"
+      file:
+        path: "/etc/httpd/conf.d/{{ website_hostname }}.conf"
+        state: absent
